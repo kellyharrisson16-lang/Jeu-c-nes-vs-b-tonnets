@@ -1,0 +1,504 @@
+
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Bâtonnets ou cônes?</title>
+
+<style>
+:root {
+  --background: #101426;
+  --card: #1b223a;
+  --card-light: #252e4a;
+  --text: #f4f6ff;
+  --muted: #aab4d0;
+  --cyan: #57e3d2;
+  --purple: #b69aff;
+  --green: #58d68d;
+  --red: #ff7c8a;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 28px 16px;
+  font-family: Arial, sans-serif;
+  color: var(--text);
+  background:
+    radial-gradient(circle at top left, #25375c 0, transparent 35%),
+    radial-gradient(circle at bottom right, #30234d 0, transparent 35%),
+    var(--background);
+  min-height: 100vh;
+}
+
+.container {
+  max-width: 950px;
+  margin: auto;
+}
+
+.entete {
+  text-align: center;
+  margin-bottom: 28px;
+}
+
+.eyebrow {
+  display: inline-block;
+  color: var(--cyan);
+  background: #18363d;
+  border: 1px solid #2a666b;
+  padding: 7px 13px;
+  border-radius: 30px;
+  font-size: 12px;
+  font-weight: bold;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+}
+
+h1 {
+  font-size: clamp(28px, 5vw, 42px);
+  margin: 18px 0 10px;
+  letter-spacing: -1px;
+}
+
+.entete p {
+  color: var(--muted);
+  line-height: 1.6;
+  max-width: 600px;
+  margin: auto;
+}
+
+.progression {
+  margin: 25px auto;
+  max-width: 600px;
+}
+
+.progression-texte {
+  display: flex;
+  justify-content: space-between;
+  color: var(--muted);
+  font-size: 13px;
+  margin-bottom: 8px;
+}
+
+.barre {
+  height: 8px;
+  background: #303852;
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+.barre-remplie {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, var(--cyan), var(--purple));
+  border-radius: 20px;
+  transition: width 0.3s ease;
+}
+
+.table-card {
+  background: rgba(27, 34, 58, 0.94);
+  border: 1px solid #394563;
+  border-radius: 18px;
+  padding: 12px;
+  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.25);
+}
+
+.table-container {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  min-width: 570px;
+  border-collapse: separate;
+  border-spacing: 8px;
+}
+
+th {
+  padding: 17px 12px;
+  text-align: center;
+  border-radius: 12px;
+  font-size: 15px;
+  letter-spacing: 0.5px;
+}
+
+th:first-child {
+  background: linear-gradient(135deg, #1e7f89, #285d7c);
+  color: white;
+}
+
+th:last-child {
+  background: linear-gradient(135deg, #6852a4, #4c4282);
+  color: white;
+}
+
+td {
+  padding: 12px;
+  background: var(--card-light);
+  border: 1px solid #394563;
+  border-radius: 12px;
+  text-align: center;
+  width: 50%;
+}
+
+select {
+  width: 100%;
+  padding: 13px 12px;
+  border: 1px solid #4a5878;
+  border-radius: 9px;
+  color: var(--text);
+  background: #151c30;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  outline: none;
+  transition: border 0.2s, box-shadow 0.2s;
+}
+
+select:focus {
+  border-color: var(--cyan);
+  box-shadow: 0 0 0 3px rgba(87, 227, 210, 0.12);
+}
+
+select option {
+  background: #151c30;
+  color: white;
+}
+
+select.correct {
+  border: 2px solid var(--green);
+  background: #18392f;
+}
+
+select.incorrect {
+  border: 2px solid var(--red);
+  background: #45252f;
+}
+
+select:disabled {
+  opacity: 1;
+}
+
+.actions {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin: 25px 0 18px;
+}
+
+button {
+  border: none;
+  border-radius: 10px;
+  padding: 13px 24px;
+  font-size: 15px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: transform 0.2s, opacity 0.2s;
+}
+
+button:hover {
+  transform: translateY(-2px);
+  opacity: 0.9;
+}
+
+#verifier {
+  color: #10202b;
+  background: linear-gradient(135deg, var(--cyan), #8af0df);
+  box-shadow: 0 5px 20px rgba(87, 227, 210, 0.2);
+}
+
+#recommencer {
+  color: var(--text);
+  background: #303852;
+  border: 1px solid #4a5878;
+}
+
+.resultat {
+  display: none;
+  max-width: 600px;
+  margin: 20px auto;
+  padding: 22px;
+  text-align: center;
+  background: #1b223a;
+  border: 1px solid #394563;
+  border-radius: 16px;
+}
+
+.resultat.visible {
+  display: block;
+}
+
+.score {
+  font-size: 34px;
+  font-weight: bold;
+  color: var(--cyan);
+  margin-bottom: 8px;
+}
+
+.message {
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.note {
+  color: var(--muted);
+  text-align: center;
+  font-size: 12px;
+  margin-top: 20px;
+}
+
+@media (max-width: 600px) {
+  body {
+    padding: 20px 10px;
+  }
+
+  .table-card {
+    padding: 5px;
+  }
+
+  table {
+    border-spacing: 5px;
+  }
+
+  td {
+    padding: 8px;
+  }
+
+  select {
+    padding: 11px 7px;
+    font-size: 12px;
+  }
+
+  th {
+    padding: 13px 8px;
+    font-size: 13px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <header class="entete">
+    <div class="eyebrow">Neurophysiologie visuelle</div>
+
+    <h1>Bâtonnets ou cônes?</h1>
+
+    <p>
+      Compare les deux types de photorécepteurs.
+      Pour chaque caractéristique, sélectionne le bon photorécepteur
+      dans chacune des colonnes.
+    </p>
+  </header>
+
+  <div class="progression">
+    <div class="progression-texte">
+      <span>Progression</span>
+      <span id="progression-texte">0 / 20 réponses</span>
+    </div>
+
+    <div class="barre">
+      <div class="barre-remplie" id="barre-remplie"></div>
+    </div>
+  </div>
+
+  <div class="table-card">
+    <div class="table-container">
+
+      <table>
+        <thead>
+          <tr>
+            <th>☾ Bâtonnets</th>
+            <th>☀ Cônes</th>
+          </tr>
+        </thead>
+
+        <tbody id="tableau">
+        </tbody>
+      </table>
+
+    </div>
+  </div>
+
+  <div class="actions">
+    <button id="verifier" onclick="verifierReponses()">
+      Vérifier mes réponses
+    </button>
+
+    <button id="recommencer" onclick="recommencer()">
+      Recommencer
+    </button>
+  </div>
+
+  <div class="resultat" id="resultat">
+    <div class="score" id="score"></div>
+    <div class="message" id="message"></div>
+  </div>
+
+  <p class="note">
+    Exercice de révision — sélectionne une réponse dans chaque case.
+  </p>
+
+</div>
+
+<script>
+const donnees = [
+  {
+    batonnet: "Achromatique : un pigment",
+    cone: "Chromatique : trois pigments"
+  },
+  {
+    batonnet: "Rhodopsine",
+    cone: "Iodopsine (bleu, vert, rouge)"
+  },
+  {
+    batonnet: "Beaucoup de photopigments",
+    cone: "Peu de photopigments"
+  },
+  {
+    batonnet: "Réponse lente",
+    cone: "Réponse rapide"
+  },
+  {
+    batonnet: "Grande amplification",
+    cone: "Faible amplification"
+  },
+  {
+    batonnet: "Grande sensibilité",
+    cone: "Faible sensibilité"
+  },
+  {
+    batonnet: "Réponse saturante",
+    cone: "Réponse non saturante"
+  },
+  {
+    batonnet: "Voies rétiniennes très convergentes",
+    cone: "Voies rétiniennes peu convergentes"
+  },
+  {
+    batonnet: "Faible acuité",
+    cone: "Grande acuité"
+  },
+  {
+    batonnet: "Non directionnel",
+    cone: "Directionnel"
+  }
+];
+
+const tableau = document.getElementById("tableau");
+const resultat = document.getElementById("resultat");
+
+function creerMenu(choix, reponse) {
+  const select = document.createElement("select");
+
+  select.dataset.reponse = reponse;
+
+  const optionInitiale = document.createElement("option");
+  optionInitiale.value = "";
+  optionInitiale.textContent = "Choisir une réponse...";
+  select.appendChild(optionInitiale);
+
+  // Les deux réponses de cette ligne sont proposées dans les deux menus.
+  const choixMelanges = [...choix].sort(() => Math.random() - 0.5);
+
+  choixMelanges.forEach(texte => {
+    const option = document.createElement("option");
+    option.value = texte;
+    option.textContent = texte;
+    select.appendChild(option);
+  });
+
+  select.addEventListener("change", mettreAJourProgression);
+
+  return select;
+}
+
+function creerTableau() {
+  tableau.innerHTML = "";
+
+  donnees.forEach(ligne => {
+    const tr = document.createElement("tr");
+
+    const tdBatonnet = document.createElement("td");
+    const tdCone = document.createElement("td");
+
+    const choix = [ligne.batonnet, ligne.cone];
+
+    tdBatonnet.appendChild(
+      creerMenu(choix, ligne.batonnet)
+    );
+
+    tdCone.appendChild(
+      creerMenu(choix, ligne.cone)
+    );
+
+    tr.appendChild(tdBatonnet);
+    tr.appendChild(tdCone);
+
+    tableau.appendChild(tr);
+  });
+
+  mettreAJourProgression();
+}
+
+function mettreAJourProgression() {
+  const menus = document.querySelectorAll("select");
+  const remplis = [...menus].filter(menu => menu.value !== "").length;
+
+  document.getElementById("progression-texte").textContent =
+    `${remplis} / ${menus.length} réponses`;
+
+  document.getElementById("barre-remplie").style.width =
+    `${(remplis / menus.length) * 100}%`;
+}
+
+function verifierReponses() {
+  const menus = document.querySelectorAll("select");
+  let score = 0;
+
+  menus.forEach(menu => {
+    menu.classList.remove("correct", "incorrect");
+
+    if (menu.value === menu.dataset.reponse) {
+      score++;
+      menu.classList.add("correct");
+    } else {
+      menu.classList.add("incorrect");
+    }
+  });
+
+  document.getElementById("score").textContent =
+    `${score} / ${menus.length}`;
+
+  if (score === menus.length) {
+    document.getElementById("message").textContent =
+      "Excellent! Tu as obtenu toutes les bonnes réponses!";
+  } else {
+    document.getElementById("message").textContent =
+      "Certaines réponses sont incorrectes. Tu peux les modifier et vérifier à nouveau.";
+  }
+
+  resultat.classList.add("visible");
+}
+
+function recommencer() {
+  creerTableau();
+  resultat.classList.remove("visible");
+  document.getElementById("score").textContent = "";
+  document.getElementById("message").textContent = "";
+}
+
+creerTableau();
+</script>
+
+</body>
+</html>
